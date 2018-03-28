@@ -1,7 +1,10 @@
 const passport=require('passport');
 const GoogleStrategy=require('passport-google-oauth20');
+const FacebookStrategy=require('passport-facebook');
+
 const keys=require('./keys');
 const User=require('../models/user-model');
+
 
 passport.serializeUser((user,done)=>{
 	done(null,user.id);
@@ -21,7 +24,7 @@ passport.use(
 		clientSecret:keys.google.clientSecret
 	},(accessToken,refreshToken,profile,done)=>{
 		//check if user already exists in out db
-		console.log(profile);
+		//console.log(profile);
 		User.findOne({googleId:profile.id}).then((currentUser)=>{
 			if(currentUser){
 				//already have user
@@ -30,9 +33,9 @@ passport.use(
 			}else{
 				//if not, create user in our db
 				new User({
-					username:profile.displayName,
+					googleUsername:profile.displayName,
 					googleId:profile.id,
-					thumbnail:profile._json.image.url
+					googleThumbnail:profile._json.image.url
 				}).save().then((newUser)=>{
 					console.log('new user created:'+newUser);
 					done(null,newUser);
@@ -43,4 +46,33 @@ passport.use(
 		
 	})
 );
+
+
+passport.use(new FacebookStrategy({
+	//options for facebook strategy
+    clientID: keys.facebook.appID,
+    clientSecret: keys.facebook.appSecret,
+    callbackURL: 'https://localhost:3000/auth/facebook/redirect'
+  },(accessToken, refreshToken, profile, done)=>{
+  	//console.log(profile);
+    User.findOne({facebookId:profile.id}).then((currentUser)=>{
+			if(currentUser){
+				//already have user
+				console.log('user is : '+currentUser);
+				done(null,currentUser);
+			}else{
+				//if not, create user in our db
+				new User({
+					facebookUsername:profile.displayName,
+					facebookId:profile.id,
+					facebookThumbnail:`http://graph.facebook.com/${profile.id}/picture?type=square`
+				}).save().then((newUser)=>{
+					console.log('new user created:'+newUser);
+					done(null,newUser);
+				});	
+			}
+		});
+	}
+));
+
 

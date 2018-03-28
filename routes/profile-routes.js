@@ -10,7 +10,20 @@ const authCheck=(req,res,next)=>{
 };
 
 router.get('/',authCheck,(req,res)=>{
-	res.render('profile',{user:req.user});
+	if(req.user.googleId){
+		res.render('profile',{user:{
+			username:req.user.googleUsername,
+			userId:req.user.googleId,
+			thumbnail:req.user.googleThumbnail
+		}});
+	}else if(req.user.facebookId){
+		res.render('profile',{user:{
+			username:req.user.facebookUsername,
+			userId:req.user.facebookId,
+			thumbnail:req.user.facebookThumbnail
+		}});
+	}
+	// res.render('profile',{user:req.user});
 });
 
 module.exports=router;

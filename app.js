@@ -7,8 +7,17 @@ const keys=require('./config/keys');
 const cookieSession=require('cookie-session');
 const passport=require('passport');
 
+const https = require('https')
+const fs = require('fs')
 
 const app=express();
+var port=3000;
+
+
+const httpsOptions = {
+  key: fs.readFileSync('./config/key.pem'),
+  cert: fs.readFileSync('./config/cert.pem')
+}
 
 //set up view engine
 app.set('view engine','ejs');
@@ -36,9 +45,9 @@ app.get('/',(req,res)=>{
 	res.render('home',{user:req.user});
 });
 
-app.listen(3000,()=>{
-	console.log('app now listening for requests on port 3000');
-});
+const server = https.createServer(httpsOptions, app).listen(port, () => {
+  console.log('server running at ' + port)
+})
 
 
 //localhost:3000/auth/login
