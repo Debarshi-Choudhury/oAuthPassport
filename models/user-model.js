@@ -7,7 +7,10 @@ const userSchema=new Schema({
 	facebookThumbnail:String,
 	googleUsername:String,
 	googleId:String,
-	googleThumbnail:String
+	googleThumbnail:String,
+	linkedinUsername:String,
+	linkedinId:String,
+	linkedinThumbnail:String
 });
 
 const User=mongoose.model('user',userSchema);

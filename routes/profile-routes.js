@@ -22,6 +22,12 @@ router.get('/',authCheck,(req,res)=>{
 			userId:req.user.facebookId,
 			thumbnail:req.user.facebookThumbnail
 		}});
+	}else if(req.user.linkedinId){
+		res.render('profile',{user:{
+			username:req.user.linkedinUsername,
+			userId:req.user.linkedinId,
+			thumbnail:req.user.linkedinThumbnail
+		}});
 	}
 	// res.render('profile',{user:req.user});
 });
