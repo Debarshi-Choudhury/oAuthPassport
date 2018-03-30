@@ -24,7 +24,7 @@ passport.use(
 		clientID:keys.google.clientID,
 		clientSecret:keys.google.clientSecret
 	},(accessToken,refreshToken,profile,done)=>{
-		//console.log(profile);
+		// console.log(profile);
 		User.findOne({googleId:profile.id}).then((currentUser)=>{
 			if(currentUser){
 				//already have user
@@ -35,7 +35,8 @@ passport.use(
 				new User({
 					googleUsername:profile.displayName,
 					googleId:profile.id,
-					googleThumbnail:profile._json.image.url
+					googleThumbnail:profile._json.image.url,
+					googleEmail:profile.emails[0].value
 				}).save().then((newUser)=>{
 					console.log('new user created:'+newUser);
 					done(null,newUser);
@@ -54,7 +55,7 @@ passport.use(
 		consumerSecret:keys.linkedin.consumerSecret,
 		profileFields: ['id', 'first-name', 'last-name', 'email-address','picture-url']
 	},(accessToken,refreshToken,profile,done)=>{
-		// console.log(profile);
+		console.log(profile);
 		User.findOne({linkedinId:profile.id}).then((currentUser)=>{
 			if(currentUser){
 				//already have user
@@ -65,7 +66,8 @@ passport.use(
 				new User({
 					linkedinId:profile.id,
 					linkedinUsername:profile.displayName,
-					linkedinThumbnail:profile._json.pictureUrl
+					linkedinThumbnail:profile._json.pictureUrl,
+					linkedinEmail:profile._json.emailAddress
 				}).save().then((newUser)=>{
 					console.log('new user created:'+newUser);
 					done(null,newUser);
@@ -81,9 +83,10 @@ passport.use(new FacebookStrategy({
 	//options for facebook strategy
     clientID: keys.facebook.appID,
     clientSecret: keys.facebook.appSecret,
-    callbackURL: 'https://localhost:3000/auth/facebook/redirect'
+    callbackURL: 'https://localhost:3000/auth/facebook/redirect',
+    profileFields:['id','displayName','email','gender']
   },(accessToken, refreshToken, profile, done)=>{
-  	//console.log(profile);
+  	console.log(profile);
     User.findOne({facebookId:profile.id}).then((currentUser)=>{
 			if(currentUser){
 				//already have user
@@ -94,7 +97,8 @@ passport.use(new FacebookStrategy({
 				new User({
 					facebookUsername:profile.displayName,
 					facebookId:profile.id,
-					facebookThumbnail:`http://graph.facebook.com/${profile.id}/picture?type=square`
+					facebookThumbnail:`http://graph.facebook.com/${profile.id}/picture?type=square`,
+					facebookEmail:profile._json.email
 				}).save().then((newUser)=>{
 					console.log('new user created:'+newUser);
 					done(null,newUser);

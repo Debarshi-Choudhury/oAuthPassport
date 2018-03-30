@@ -16,8 +16,8 @@ router.get('/logout',(req,res)=>{
 })
 
 //auth with google
-router.get('/google',passport.authenticate('google',{
-	scope:['profile']
+router.get('/google',
+  passport.authenticate('google',{scope:['profile','email']
 }));
 //auth with facebook
 router.get('/facebook',
