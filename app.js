@@ -6,6 +6,7 @@ const mongoose=require('mongoose');
 const keys=require('./config/keys');
 const cookieSession=require('cookie-session');
 const passport=require('passport');
+const bodyParser=require('body-parser');
 
 const https = require('https')
 const fs = require('fs')
@@ -21,6 +22,8 @@ const httpsOptions = {
 
 //set up view engine
 app.set('view engine','ejs');
+
+app.use(bodyParser.urlencoded({extended:false}));
 
 app.use(cookieSession({
 	maxAge:24*60*60*1000,  //in milliseconds

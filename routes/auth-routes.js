@@ -2,6 +2,8 @@ const router=require('express').Router();
 const passport=require('passport');
 
 
+const User=require('../models/user-model');
+
 //auth login
 router.get('/login',(req,res)=>{
 	res.render('login',{user:req.user});
@@ -29,25 +31,52 @@ router.get('/linkedin',
 
 //callback route for google to redirect to
 router.get('/google/redirect',passport.authenticate('google'),(req,res)=>{
-	//res.send(req.user);
-	res.redirect('/profile');
+	 
+  res.redirect('/profile');
+
 });
 
 
 //callback route for facebook to redirect to 
 router.get('/facebook/redirect',
-  passport.authenticate('facebook', { failureRedirect: '/login' }),
-  function(req, res) {
-    // Successful authentication, redirect home.
+  passport.authenticate('facebook', { failureRedirect: '/login' }),(req, res)=>{
+
     res.redirect('/profile');
+    
   });
+
+
 
 //callback route for linkedin to redirect to 
 router.get('/linkedin/redirect', 
   passport.authenticate('linkedin', { failureRedirect: '/login' }),
   function(req, res) {
-    // Successful authentication, redirect home.
+
     res.redirect('/profile');
+
   });
+
+
+// router.get('/setPassword',(req,res)=>{
+//   res.render('setPassword',{user:req.user});
+// });
+
+// router.post('/setPassword',(req,res)=>{
+//   var password=req.body.password;
+//   var password2=req.body.password2;
+//   if(!(password===password2)){
+//     req.flash('err_msg','Password not matched');
+//     res.redirect('/auth/setPassword');
+//   }else{
+//     req.user.password=password;
+//     req.user.setPassword=true;
+//     req.user.save().then((updatedUser)=>{
+//       console.log('User password is Updated: '+ updatedUser);
+//       res.redirect('/profile');
+//     });
+//   }
+
+// });
+
 
 module.exports=router;
